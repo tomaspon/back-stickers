@@ -9,26 +9,25 @@ const Cart = sequelize.define(
       allowNull: false,
       defaultValue: "waiting",
       validate: {
-        isIn: [["waiting", "shopped"]], // Valores permitidos para el estado
+        isIn: [["waiting", "shopped"]],
       },
     },
-    student: {
+    client: {
       type: DataTypes.UUID,
       references: {
-        model: "Users", // Nombre de la tabla referenciada en plural
-        key: "id", // Columna de referencia
+        key: "id",
       },
       allowNull: false,
     },
   },
   {
     timestamps: true,
-    tableName: "carts",
+    tableName: "Carts",
   }
 );
 
 // Importa el modelo `Sticker`
-const Sticker = require("./sticker"); // Asegúrate de tener el modelo `Sticker` importado
+const Sticker = require("./stickerModel"); // Asegúrate de tener el modelo `Sticker` importado
 
 // Relación de muchos a muchos entre `Cart` y `Sticker`
 Cart.belongsToMany(Sticker, { through: "CartStickers", as: "stickers" });

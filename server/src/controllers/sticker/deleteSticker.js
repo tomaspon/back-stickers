@@ -1,7 +1,7 @@
-const Sticker = require("../models/stickerModel");
+const Sticker = require("../../models/stickerModel");
 
 const deleteSticker = async (req, res) => {
-  const { id } = req.params; // Obtener el ID del sticker desde los parámetros de la URL
+  const { id } = req.params;
   console.log(`ID del sticker a eliminar: ${id}`);
 
   try {

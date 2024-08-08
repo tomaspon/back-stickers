@@ -1,43 +1,40 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../database"); // Asegúrate de tener la instancia de Sequelize configurada
+const sequelize = require("../database");
+const User = require("./userModel");
 
 const Payment = sequelize.define(
   "Payment",
   {
     amount: {
-      type: DataTypes.FLOAT, // Utiliza FLOAT para representar cantidades monetarias
+      type: DataTypes.FLOAT,
       allowNull: false,
     },
     date: {
-      type: DataTypes.DATE, // Utiliza DATE para representar fechas
+      type: DataTypes.DATE,
       allowNull: false,
     },
     status: {
-      type: DataTypes.STRING(20), // Ajusta la longitud según los valores de enumeración
+      type: DataTypes.STRING(20),
       allowNull: false,
       validate: {
-        isIn: [["Pending", "Approved", "Cancelled", "Rejected"]], // Validación de enumeración
+        isIn: [["Pending", "Approved", "Cancelled", "Rejected"]],
       },
     },
     userId: {
       type: DataTypes.UUID,
       references: {
-        model: "users", // Nombre de la tabla referenciada en plural
-        key: "id", // Columna de referencia
+        model: "users",
+        key: "id",
       },
       allowNull: false,
     },
   },
   {
     timestamps: true,
-    tableName: "payments", // Nombre de la tabla en la base de datos
+    tableName: "Payments",
   }
 );
 
-// Importa el modelo `User`
-const User = require("./user");
-
-// Relación de muchos a uno entre `Payment` y `User`
 Payment.belongsTo(User, { foreignKey: "userId", as: "user" });
 User.hasMany(Payment, { foreignKey: "userId", as: "payments" });
 

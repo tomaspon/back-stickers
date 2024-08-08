@@ -1,21 +1,22 @@
-const Sticker = require("../models/stickerModel"); // Asegúrate de importar el modelo correcto
+const Sticker = require("../../models/stickerModel");
 
-// Función para crear un nuevo sticker
 const postSticker = async (stickerData) => {
   try {
-    const { name, image, description, price, stock } = stickerData;
+    const { id, name, image, description, price, stock } = stickerData;
 
-    // Validaciones básicas
-    if (!name || !price) {
-      throw new Error("Faltan datos obligatorios: nombre y precio.");
+    if (!name) {
+      throw new Error("Debes indicar un nombre.");
+    }
+    if (!price) {
+      throw new Error("Debes indicar un precio.");
     }
 
     if (typeof price !== "number" || price <= 0) {
       throw new Error("El precio debe ser un número positivo.");
     }
 
-    // Crear un nuevo sticker en la base de datos
     const newSticker = await Sticker.create({
+      id,
       name,
       image,
       description,
@@ -30,5 +31,4 @@ const postSticker = async (stickerData) => {
   }
 };
 
-// Exportar las funciones del controlador
 module.exports = postSticker;

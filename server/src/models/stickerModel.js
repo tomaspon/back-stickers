@@ -1,9 +1,16 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../database"); // Asegúrate de tener la instancia de Sequelize configurada
+const sequelize = require("../database");
+const crypto = require("crypto");
 
 const Sticker = sequelize.define(
   "Sticker",
   {
+    id: {
+      type: DataTypes.STRING(24),
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: () => crypto.randomBytes(12).toString("hex"),
+    },
     name: {
       type: DataTypes.STRING(255),
       allowNull: false,
