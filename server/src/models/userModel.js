@@ -1,15 +1,14 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
-const crypto = require("crypto"); // Asegúrate de importar el módulo crypto
 
 const User = sequelize.define(
   "User",
   {
     id: {
-      type: DataTypes.STRING(24),
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
-      defaultValue: () => crypto.randomBytes(12).toString("hex"), // Genera un ID hexadecimal por defecto
     },
     name: {
       type: DataTypes.STRING,

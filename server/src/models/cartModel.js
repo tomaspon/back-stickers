@@ -1,9 +1,17 @@
+// models/cartModel.js
 const { DataTypes } = require("sequelize");
-const sequelize = require("../database"); // Asegúrate de tener la instancia de Sequelize configurada
+const sequelize = require("../database");
+const User = require("./userModel");
 
 const Cart = sequelize.define(
   "Cart",
   {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.STRING(20),
       allowNull: false,
@@ -15,9 +23,15 @@ const Cart = sequelize.define(
     client: {
       type: DataTypes.UUID,
       references: {
+        model: User,
         key: "id",
       },
       allowNull: false,
+    },
+    items: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: [],
     },
   },
   {
@@ -25,12 +39,5 @@ const Cart = sequelize.define(
     tableName: "Carts",
   }
 );
-
-// Importa el modelo `Sticker`
-const Sticker = require("./stickerModel"); // Asegúrate de tener el modelo `Sticker` importado
-
-// Relación de muchos a muchos entre `Cart` y `Sticker`
-Cart.belongsToMany(Sticker, { through: "CartStickers", as: "stickers" });
-Sticker.belongsToMany(Cart, { through: "CartStickers", as: "carts" });
 
 module.exports = Cart;

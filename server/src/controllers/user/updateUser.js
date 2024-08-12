@@ -2,7 +2,7 @@ const User = require("../../models/userModel");
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { newName, newLastName, newEmail, newPassword, newImg } = req.body;
+  const { newName, newLastname, newEmail, newPassword, newImg } = req.body;
 
   try {
     const user = await User.findByPk(id);
@@ -13,7 +13,7 @@ const updateUser = async (req, res) => {
 
     const isDataChanged =
       newName !== user.name ||
-      newLastName !== user.lastname ||
+      newLastname !== user.lastname ||
       newEmail !== user.email ||
       newPassword !== user.password ||
       newImg !== user.img;
@@ -23,7 +23,7 @@ const updateUser = async (req, res) => {
     }
 
     user.name = newName;
-    user.lastname = newLastName;
+    user.lastname = newLastname;
     user.email = newEmail;
     user.password = newPassword;
     user.img = newImg;

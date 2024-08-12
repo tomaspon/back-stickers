@@ -1,22 +1,9 @@
 const User = require("../../models/userModel");
-const crypto = require("crypto");
-
-const generateUniqueId = async () => {
-  let uniqueId;
-  let exists = true;
-
-  while (exists) {
-    uniqueId = crypto.randomBytes(12).toString("hex");
-    const user = await User.findOne({ where: { id: uniqueId } });
-    exists = !!user;
-  }
-};
-
+const Cart = require("../../models/cartModel");
+const { v4: uuidv4 } = require("uuid");
 const postUser = async (req, res) => {
   try {
     const { name, lastname, email, password, img, profile } = req.body;
-
-    const uniqueId = await generateUniqueId();
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -24,6 +11,8 @@ const postUser = async (req, res) => {
         .status(400)
         .json({ message: "El correo electrónico ya está en uso" });
     }
+
+    const uniqueId = uuidv4();
 
     const newUser = await User.create({
       id: uniqueId,
@@ -35,7 +24,13 @@ const postUser = async (req, res) => {
       profile,
     });
 
-    res.status(201).json(newUser);
+    const newCart = await Cart.create({
+      id: uuidv4(),
+      client: newUser.id,
+      items: [],
+    });
+
+    res.status(201).json({ user: newUser, cart: newCart });
   } catch (error) {
     console.error(error);
 

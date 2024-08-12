@@ -12,12 +12,18 @@ const getUserById = require("../controllers/user/getUserById");
 const getUserByName = require("../controllers/user/getUserByName");
 const deleteUser = require("../controllers/user/deleteUser");
 const updateUser = require("../controllers/user/updateUser");
+const postPayment = require("../controllers/payment/postPayment");
+const getAllPayments = require("../controllers/payment/getAllPayments");
+const addCartProduct = require("../controllers/cart/addCartProduct");
+const getCartById = require("../controllers/cart/getCartById");
+const getAllCarts = require("../controllers/cart/getAllCarts");
+const deleteCartItem = require("../controllers/cart/deleteCartItem");
 
 //stickers
 router.get("/stickers", getSticker);
 router.get("/stickers/:id", getStickerById);
 router.get("/stickers/search/:name", getStickerByName);
-router.put("/stickers/update/:id", updateSticker);
+router.put("/stickers/:id", updateSticker);
 router.delete("/stickers/:id", deleteSticker);
 router.post("/stickers", async (req, res) => {
   try {
@@ -29,11 +35,20 @@ router.post("/stickers", async (req, res) => {
 });
 
 //user
-router.delete("/users/:id", deleteUser);
+router.delete("/users/:userId", deleteUser);
 router.put("/users/:id", updateUser);
 router.post("/users", postUser);
 router.get("/users", getUsers);
 router.get("/users/:id", getUserById);
-router.get("/users/search/:name", getUserByName);
+router.get("/users/:name", getUserByName);
+
+router.post("/payment", postPayment);
+router.get("/payment", getAllPayments);
+
+//cart
+router.post("/carts/:cartId/items", addCartProduct);
+router.delete("/carts/:cartId/items", deleteCartItem);
+router.get("/carts/:cartId", getCartById);
+router.get("/carts/", getAllCarts);
 
 module.exports = router;

@@ -1,32 +1,55 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
-const User = require("./userModel");
+const Cart = require("./cartModel");
 
 const Payment = sequelize.define(
   "Payment",
   {
-    amount: {
-      type: DataTypes.FLOAT,
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
       allowNull: false,
     },
-    date: {
-      type: DataTypes.DATE,
+    amount: {
+      type: DataTypes.FLOAT,
       allowNull: false,
     },
     status: {
       type: DataTypes.STRING(20),
       allowNull: false,
+      defaultValue: "pending",
       validate: {
-        isIn: [["Pending", "Approved", "Cancelled", "Rejected"]],
+        isIn: [["pending", "completed", "failed"]],
       },
     },
-    userId: {
+    paymentMethod: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      defaultValue: "mercado_pago",
+      validate: {
+        isIn: [["mercado_pago"]],
+      },
+    },
+    transactionId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    transactionDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    payerEmail: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    cartId: {
       type: DataTypes.UUID,
+      allowNull: false,
       references: {
-        model: "users",
+        model: Cart,
         key: "id",
       },
-      allowNull: false,
     },
   },
   {
@@ -34,8 +57,5 @@ const Payment = sequelize.define(
     tableName: "Payments",
   }
 );
-
-Payment.belongsTo(User, { foreignKey: "userId", as: "user" });
-User.hasMany(Payment, { foreignKey: "userId", as: "payments" });
 
 module.exports = Payment;
