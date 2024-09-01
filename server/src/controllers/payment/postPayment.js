@@ -6,12 +6,10 @@ const postPayment = async (req, res) => {
   try {
     const { userId, cartId, amount, paymentMethod } = req.body;
 
-    // Verificar si todos los campos requeridos están presentes
     if (!userId || !cartId || !amount || !paymentMethod) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Verificar si el carrito y el usuario existen
     const cart = await Cart.findByPk(cartId);
     const user = await User.findByPk(userId);
 
@@ -23,16 +21,14 @@ const postPayment = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Crear el nuevo pago
     const newPayment = await Payment.create({
       userId,
       cartId,
       amount,
       paymentMethod,
-      status: "pending", // Status inicial puede ser 'pending'
+      status: "pending",
     });
 
-    // Responder con el nuevo pago creado
     return res.status(201).json(newPayment);
   } catch (error) {
     console.error("Error creating payment:", error);

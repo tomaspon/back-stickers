@@ -11,6 +11,7 @@ server.use(express.json());
 server.use(cors());
 
 server.use(router);
+server.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 

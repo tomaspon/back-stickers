@@ -1,49 +1,57 @@
 const Cart = require("../../models/cartModel");
+const Sticker = require("../../models/stickerModel");
+const CartSticker = require("../../models/cartStickersModel");
 
-const addCartProduct = async (req, res) => {
-  const { cartId } = req.params;
-  const { items } = req.body;
-
-  if (!Array.isArray(items) || items.length === 0) {
-    return res
-      .status(400)
-      .json({ message: "Se requiere un arreglo de items válido." });
-  }
-
-  const { stickerId, quantity } = items[0];
-
+const addToCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ where: { id: cartId } });
+    const { items } = req.body;
+
+    console.log("RECIBE POR BODY:", items);
+
+    let cart = await Cart.findOne({ where: { status: "waiting" } });
 
     if (!cart) {
-      return res.status(404).json({ message: "Carrito no encontrado" });
+      cart = await Cart.create({ status: "waiting" });
     }
 
-    const currentItems = Array.isArray(cart.items) ? cart.items : [];
+    for (const { stickerId, quantity } of items) {
+      const sticker = await Sticker.findByPk(stickerId);
+      if (!sticker) {
+        return res
+          .status(404)
+          .json({ message: `Sticker con ID ${stickerId} no encontrado` });
+      }
 
-    const existingItemIndex = currentItems.findIndex(
-      (item) => item.stickerId === stickerId
-    );
+      let cartSticker = await CartSticker.findOne({
+        where: {
+          CartId: cart.id,
+          StickerId: stickerId,
+        },
+      });
 
-    if (existingItemIndex > -1) {
-      currentItems[existingItemIndex].quantity += quantity;
-    } else {
-      currentItems.push({ stickerId, quantity });
+      if (cartSticker) {
+        cartSticker.quantity += quantity;
+        await cartSticker.save();
+      } else {
+        await CartSticker.create({
+          CartId: cart.id,
+          StickerId: stickerId,
+          quantity,
+        });
+      }
     }
 
-    cart.items = JSON.stringify(currentItems);
-
-    console.log("Estado del carrito antes de guardar:", cart.items);
-    await cart.save();
-    console.log("Carrito guardado:", cart);
-
-    res.status(200).json({ message: "Item agregado exitosamente", cart });
+    res.status(200).json({
+      message: "Items agregados exitosamente",
+      cart,
+    });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Error al agregar el ítem al carrito", error });
+    console.error("Error al agregar items al carrito:", error);
+    res.status(500).json({
+      message: "Error al agregar items al carrito",
+      error: error.message,
+    });
   }
 };
 
-module.exports = addCartProduct;
+module.exports = addToCart;

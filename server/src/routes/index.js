@@ -15,9 +15,10 @@ const updateUser = require("../controllers/user/updateUser");
 const postPayment = require("../controllers/payment/postPayment");
 const getAllPayments = require("../controllers/payment/getAllPayments");
 const addCartProduct = require("../controllers/cart/addCartProduct");
-const getCartById = require("../controllers/cart/getCartById");
 const getAllCarts = require("../controllers/cart/getAllCarts");
+const getCartItems = require("../controllers/cart/getCartItems");
 const deleteCartItem = require("../controllers/cart/deleteCartItem");
+const updateCartItem = require("../controllers/cart/updateCartItem");
 
 //stickers
 router.get("/stickers", getSticker);
@@ -46,9 +47,10 @@ router.post("/payment", postPayment);
 router.get("/payment", getAllPayments);
 
 //cart
-router.post("/carts/:cartId/items", addCartProduct);
-router.delete("/carts/:cartId/items", deleteCartItem);
-router.get("/carts/:cartId", getCartById);
+router.post("/carts/:cartId", addCartProduct);
+router.delete("/carts/:cartId", deleteCartItem);
+router.put("/carts/:cartId/items/:stickerId", updateCartItem);
+router.get("/carts/:cartId", getCartItems);
 router.get("/carts/", getAllCarts);
 
 module.exports = router;

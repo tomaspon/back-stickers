@@ -1,51 +1,47 @@
+const CartSticker = require("../../models/cartStickersModel");
 const Cart = require("../../models/cartModel");
 
 const deleteCartItem = async (req, res) => {
   const { cartId } = req.params;
   const { stickerId } = req.body;
 
+  // Validar que stickerId está presente
+  if (!stickerId) {
+    return res.status(400).json({ message: "Sticker ID es requerido" });
+  }
+
   try {
-    const cart = await Cart.findOne({ where: { id: cartId } });
+    // Buscar el carrito
+    const cart = await Cart.findByPk(cartId);
 
     if (!cart) {
       return res.status(404).json({ message: "Carrito no encontrado" });
     }
 
-    // Verificar la estructura de cart.items y stickerId
-    console.log("Items en el carrito:", cart.items);
-    console.log("Sticker ID a eliminar:", stickerId);
+    // Buscar el ítem en el carrito
+    const cartSticker = await CartSticker.findOne({
+      where: {
+        CartId: cart.id,
+        StickerId: stickerId,
+      },
+    });
 
-    if (!Array.isArray(cart.items)) {
-      // Intentar convertir cart.items en un array si no lo es
-      try {
-        cart.items = JSON.parse(cart.items);
-      } catch (parseError) {
-        return res
-          .status(500)
-          .json({ message: "Formato inválido para items en el carrito" });
-      }
-
-      if (!Array.isArray(cart.items)) {
-        return res
-          .status(500)
-          .json({ message: "Estructura de items inválida en el carrito" });
-      }
+    if (!cartSticker) {
+      return res
+        .status(404)
+        .json({ message: "Ítem no encontrado en el carrito" });
     }
 
-    // Filtra los items para eliminar el sticker especificado
-    const updatedItems = cart.items.filter(
-      (item) => item.stickerId !== stickerId
-    );
-    // Actualiza el carrito con los items restantes
-    cart.items = updatedItems;
-    await cart.save();
+    // Eliminar el ítem del carrito
+    await cartSticker.destroy();
 
-    res.status(200).json({ message: "Ítem eliminado exitosamente", cart });
+    res.status(200).json({ message: "Ítem eliminado exitosamente" });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Error al eliminar el ítem del carrito", error });
+    console.error("Error al eliminar el ítem del carrito:", error);
+    res.status(500).json({
+      message: "Error al eliminar el ítem del carrito",
+      error: error.message,
+    });
   }
 };
 

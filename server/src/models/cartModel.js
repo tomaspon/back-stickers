@@ -1,7 +1,7 @@
-// models/cartModel.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
 const User = require("./userModel");
+const CartSticker = require("./cartStickersModel");
 
 const Cart = sequelize.define(
   "Cart",
@@ -10,7 +10,6 @@ const Cart = sequelize.define(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      allowNull: false,
     },
     status: {
       type: DataTypes.STRING(20),
@@ -28,16 +27,15 @@ const Cart = sequelize.define(
       },
       allowNull: false,
     },
-    items: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-      defaultValue: [],
-    },
   },
   {
     timestamps: true,
     tableName: "Carts",
   }
 );
+
+// Relación con User
+Cart.belongsTo(User, { foreignKey: "client", as: "user" });
+Cart.hasMany(CartSticker, { foreignKey: "CartId", as: "items" });
 
 module.exports = Cart;

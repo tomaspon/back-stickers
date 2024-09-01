@@ -1,11 +1,10 @@
-// src/controllers/payment/getPayments.js
 const Payment = require("../../models/paymentModel");
 const Sticker = require("../../models/stickerModel");
 
 const getPayments = async (req, res) => {
   try {
     const payments = await Payment.findAll({
-      include: [{ model: Sticker, as: "stickers" }], // Incluir stickers asociados
+      include: [{ model: Sticker, as: "stickers" }],
     });
 
     res.status(200).json(payments);
