@@ -5,20 +5,17 @@ const deleteCartItem = async (req, res) => {
   const { cartId } = req.params;
   const { stickerId } = req.body;
 
-  // Validar que stickerId está presente
   if (!stickerId) {
     return res.status(400).json({ message: "Sticker ID es requerido" });
   }
 
   try {
-    // Buscar el carrito
     const cart = await Cart.findByPk(cartId);
 
     if (!cart) {
       return res.status(404).json({ message: "Carrito no encontrado" });
     }
 
-    // Buscar el ítem en el carrito
     const cartSticker = await CartSticker.findOne({
       where: {
         CartId: cart.id,
@@ -32,7 +29,6 @@ const deleteCartItem = async (req, res) => {
         .json({ message: "Ítem no encontrado en el carrito" });
     }
 
-    // Eliminar el ítem del carrito
     await cartSticker.destroy();
 
     res.status(200).json({ message: "Ítem eliminado exitosamente" });

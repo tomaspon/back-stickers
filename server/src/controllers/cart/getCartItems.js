@@ -6,7 +6,6 @@ const getCartItems = async (req, res) => {
   try {
     const { cartId } = req.params;
 
-    // Buscar el carrito junto con los items
     const cart = await Cart.findByPk(cartId, {
       include: [
         {
@@ -16,7 +15,7 @@ const getCartItems = async (req, res) => {
             {
               model: Sticker,
               as: "sticker",
-              attributes: ["id", "name", "price"], // Selecciona los atributos que necesitas
+              attributes: ["id", "name", "price"],
             },
           ],
         },
