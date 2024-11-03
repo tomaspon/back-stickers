@@ -27,7 +27,7 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    img: {
+    image: {
       type: DataTypes.STRING,
     },
     profile: {
@@ -37,6 +37,11 @@ const User = sequelize.define(
       validate: {
         isIn: [["user", "admin"]],
       },
+    },
+    status: {
+      type: DataTypes.ENUM("Activo", "Inactivo"), // Enum para definir los estados posibles
+      allowNull: false,
+      defaultValue: "Activo",
     },
   },
   {

@@ -12,6 +12,7 @@ const getUserById = require("../controllers/user/getUserById");
 const getUserByName = require("../controllers/user/getUserByName");
 const deleteUser = require("../controllers/user/deleteUser");
 const updateUser = require("../controllers/user/updateUser");
+const loginUser = require("../controllers/user/loginUser");
 const postPayment = require("../controllers/payment/postPayment");
 const getAllPayments = require("../controllers/payment/getAllPayments");
 const addCartProduct = require("../controllers/cart/addCartProduct");
@@ -25,7 +26,7 @@ router.get("/stickers", getSticker);
 router.get("/stickers/:id", getStickerById);
 router.get("/stickers/search/:name", getStickerByName);
 router.put("/stickers/:id", updateSticker);
-router.delete("/stickers/:id", deleteSticker);
+router.delete("/stickers", deleteSticker); // Cambiado a /stickers sin :id
 router.post("/stickers", async (req, res) => {
   try {
     const newSticker = await postSticker(req.body);
@@ -42,6 +43,8 @@ router.post("/users", postUser);
 router.get("/users", getUsers);
 router.get("/users/:id", getUserById);
 router.get("/users/:name", getUserByName);
+
+router.post("/users/login", loginUser);
 
 router.post("/payment", postPayment);
 router.get("/payment", getAllPayments);

@@ -1,6 +1,7 @@
+// models/cartStickersModel.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
-const Sticker = require("./stickerModel");
+const Sticker = require("./stickerModel"); // Verifica que esta ruta sea correcta
 
 const CartSticker = sequelize.define(
   "CartSticker",
@@ -8,7 +9,7 @@ const CartSticker = sequelize.define(
     CartId: {
       type: DataTypes.UUID,
       references: {
-        model: "Carts",
+        model: "Carts", // Asegúrate de que el modelo Carts también esté definido
         key: "id",
       },
     },
@@ -30,6 +31,7 @@ const CartSticker = sequelize.define(
   }
 );
 
+// Asegúrate de que el modelo Sticker está definido antes de usarlo aquí
 CartSticker.belongsTo(Sticker, { foreignKey: "StickerId", as: "sticker" });
 
 module.exports = CartSticker;
